@@ -1198,42 +1198,74 @@ inside the <script> at the bottom of this file for easy future editing.
     document.querySelectorAll(".form-row.error").forEach(r => r.classList.remove("error"));
   }
 
-  bookingForm.addEventListener("submit", function(e){
-    e.preventDefault();
-    clearErrors();
-    let valid = true;
+ bookingForm.addEventListener("submit", function(e){
+  e.preventDefault();
+  clearErrors();
 
-    const name = document.getElementById("fName").value.trim();
-    const phone = document.getElementById("fPhone").value.trim();
-    const service = document.getElementById("fService").value;
-    const date = document.getElementById("fDate").value;
-    const time = document.getElementById("fTime").value;
+  let valid = true;
 
-    if (name.length < 2){ document.getElementById("row-name").classList.add("error"); valid = false; }
-    if (!/^[6-9]\d{9}$/.test(phone.replace(/\s+/g,""))){ document.getElementById("row-phone").classList.add("error"); valid = false; }
-    if (!service){ document.getElementById("row-service").classList.add("error"); valid = false; }
-    if (!date){ document.getElementById("row-date").classList.add("error"); valid = false; }
-    if (!time){ document.getElementById("row-time").classList.add("error"); valid = false; }
+  const name = document.getElementById("fName").value.trim();
+  const phone = document.getElementById("fPhone").value.trim();
+  const service = document.getElementById("fService").value;
+  const date = document.getElementById("fDate").value;
+  const time = document.getElementById("fTime").value;
 
-    if (!valid){
-      const firstError = bookingForm.querySelector(".form-row.error");
-      if (firstError) firstError.scrollIntoView({ behavior:"smooth", block:"center" });
-      return;
+  if (name.length < 2){
+    document.getElementById("row-name").classList.add("error");
+    valid = false;
+  }
+
+  if (!/^[6-9]\d{9}$/.test(phone.replace(/\s+/g,""))){
+    document.getElementById("row-phone").classList.add("error");
+    valid = false;
+  }
+
+  if (!service){
+    document.getElementById("row-service").classList.add("error");
+    valid = false;
+  }
+
+  if (!date){
+    document.getElementById("row-date").classList.add("error");
+    valid = false;
+  }
+
+  if (!time){
+    document.getElementById("row-time").classList.add("error");
+    valid = false;
+  }
+
+  if (!valid){
+    const firstError = bookingForm.querySelector(".form-row.error");
+    if (firstError) {
+      firstError.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
     }
+    return;
+  }
 
-    // No backend is connected. This stores nothing beyond the current session.
-    // To make this a real booking system, connect this submit handler to your
-    // backend, a form service (e.g. Formspree/Netlify Forms), or WhatsApp API.
-    formView.style.display = "none";
-    successView.style.display = "block";
-  });
+  // WhatsApp booking
+  const whatsappNumber = "917981517146";
 
-  /* ===================== SET MIN DATE ON DATE INPUT ===================== */
-  const dateInput = document.getElementById("fDate");
-  const today = new Date().toISOString().split("T")[0];
-  dateInput.setAttribute("min", today);
+  const message =
+    "Hello Smile N Style Salon!%0A%0A" +
+    "*New Appointment Request*%0A%0A" +
+    "Name: " + encodeURIComponent(name) + "%0A" +
+    "Phone: " + encodeURIComponent(phone) + "%0A" +
+    "Service: " + encodeURIComponent(service) + "%0A" +
+    "Date: " + encodeURIComponent(date) + "%0A" +
+    "Time: " + encodeURIComponent(time);
 
-})();
+  const whatsappURL =
+    "https://wa.me/" + whatsappNumber + "?text=" + message;
+
+  window.open(whatsappURL, "_blank");
+
+  formView.style.display = "none";
+  successView.style.display = "block";
+});
 </script>
 
 </body>
